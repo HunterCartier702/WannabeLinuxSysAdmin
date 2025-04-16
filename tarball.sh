@@ -26,14 +26,25 @@ read -p "Enter directory or file to be archived and compressed: " zipped
 if [[ ! -e "$zipped" ]]; then
     echo "The specified file or directory does not exist. Exiting.."
     exit 1
-elif [[ ! -r "$zipped" && ! -x "$zipped" ]];then  # Check user permissions on file
-	echo "You don't have perms over file. Try running as root. Exiting.."
-	exit 1
+elif [[ -d "$zipped" ]];then
+	if [[ -r "$zipped" && -x "$zipped" ]];then
+		echo -e "Directory \""$zipped"\" exists and \"$USER\" has correct perms to archive and compress. Continuing...\n"
+	else
+		echo "You dont have correct perms over "$zipped""
+		exit 1
+	fi
+elif [[ -f "$zipped" ]];then 
+	if [[ -r "$zipped" ]];then
+		echo -e "File \""$zipped"\" exists and \"$USER\" has correct perms to archive and compress. Continuing...\n"
+	else 
+		echo "You don't have correct perms over "$zipped""
+		exit 1
+	fi
 else
-	echo -e "File \""$zipped"\" exists and \"$USER\" has correct perms to archive and compress file. Continuing...\n"
+	echo "Error"
+	exit 1
 fi
 
-# Get the base name of the file/folder (without path)
 base="$(basename "$zipped")"
 
 # Ask for output directory (optional)
