@@ -4,16 +4,18 @@
 
 echo "****Archive and Compress***"
 echo -e "Enter compression type to use: \n"
+
 echo "1 for .gzip"
 echo "2 for .bzip2"
 echo "3 for .xz"
+echo "4 for .lz"
 echo -e "q to exit \n"
 
 read -p "Enter option: " comp
 
 if [[ "$comp" == "q" ]];then
 	exit 0
-elif [[ "$comp" =~ ^[1-3]$ ]];then
+elif [[ "$comp" =~ ^[1-4]$ ]];then
 	:
 else
 	echo "Invalid input"
@@ -26,6 +28,7 @@ read -p "Enter directory or file to be archived and compressed: " zipped
 if [[ ! -e "$zipped" ]]; then
     echo "The specified file or directory does not exist. Exiting.."
     exit 1
+# Check if directory and then user permissions
 elif [[ -d "$zipped" ]];then
 	if [[ -r "$zipped" && -x "$zipped" ]];then
 		echo -e "Directory \""$zipped"\" exists and \"$USER\" has correct perms to archive and compress. Continuing...\n"
@@ -33,6 +36,7 @@ elif [[ -d "$zipped" ]];then
 		echo "You dont have correct perms over "$zipped""
 		exit 1
 	fi
+# Check if file and then user permissions
 elif [[ -f "$zipped" ]];then 
 	if [[ -r "$zipped" ]];then
 		echo -e "File \""$zipped"\" exists and \"$USER\" has correct perms to archive and compress. Continuing...\n"
@@ -45,6 +49,7 @@ else
 	exit 1
 fi
 
+# Strip any '/'s and parts of path if any
 base="$(basename "$zipped")"
 
 # Ask for output directory (optional)
@@ -52,7 +57,7 @@ read -p "Enter output directory (e.g., /home/user/backups Press 'Enter' for curr
 outdir="${outdir:-.}"  # Use current directory if none provided
 
 echo -e "\n#########################################\n"
-
+# Archive and compress
 case $comp in
 	1)
 		output="$outdir/$(date +%Y-%m-%d)_$base.tar.gz"
@@ -68,5 +73,10 @@ case $comp in
 		output="$outdir/$(date +%Y-%m-%d)_$base.tar.xz"
 		echo "Archive $output created from:"
 		tar -cJvf "$output" "$zipped"
+		;;
+	4)
+		output="$outdir/$(date +%Y-%m-%d)_$base.tar.lz"
+		echo "Archive $output created from:"
+		tar -lzip -cvf "$output" "$zipped"
 		;;
 esac
