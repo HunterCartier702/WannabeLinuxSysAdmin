@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Mostly useless script, but good practice
 
@@ -11,16 +11,16 @@ echo "3 for .xz"
 echo "4 for .lz"
 echo -e "q to exit \n"
 
-read -p "Enter option: " comp
+read -p "Enter number for option: " comp
 
-if [[ "$comp" == "q" ]];then
-	exit 0
-elif [[ "$comp" =~ ^[1-4]$ ]];then
-	echo "$comp"
-else
-	echo "Invalid input"
-	exit 1
-fi
+case $comp in 
+	1) echo "$comp .gzip" ;;
+	2) echo "$comp .bzip2" ;;
+	3) echo "$comp .xz" ;;
+	4) echo "$comp .lz" ;;
+	q) echo "Quitting..";exit 0 ;;
+	*) echo "Invalid input";exit 1 ;;
+esac
 
 read -p "Enter directory or file to be archived and compressed: " zipped
 
@@ -31,7 +31,7 @@ if [[ ! -e "$zipped" ]]; then
 # Check if directory and then user permissions
 elif [[ -d "$zipped" ]];then
 	if [[ -r "$zipped" && -x "$zipped" ]];then
-		echo -e "Directory \""$zipped"\" exists and \"$USER\" has correct perms to archive and compress. Continuing...\n"
+		echo -e "\"$USER\" can archive and compress \""$zipped"\". Continuing...\n"
 	else
 		echo "You dont have correct perms over "$zipped""
 		exit 1
@@ -39,7 +39,7 @@ elif [[ -d "$zipped" ]];then
 # Check if file and then user permissions
 elif [[ -f "$zipped" ]];then 
 	if [[ -r "$zipped" ]];then
-		echo -e "File \""$zipped"\" exists and \"$USER\" has correct perms to archive and compress. Continuing...\n"
+		echo -e "\"$USER\" can archive and compress \""$zipped"\". Continuing...\n"
 	else 
 		echo "You don't have correct perms over "$zipped""
 		exit 1
@@ -54,7 +54,19 @@ base="$(basename "$zipped")"
 
 # Ask for output directory (optional)
 read -p "Enter output directory (e.g., /home/user/backups Press 'Enter' for current directory.): " outdir
-outdir="${outdir:-.}"  # Use current directory if none provided
+
+# Check if directory exists and then permissions
+if [[ -z "$outdir" ]];then
+	outdir="."  # Use current directory if none provided
+elif [[ ! -d "$outdir" ]];then
+	echo "Directory "$outdir" doesn't exist"
+	exit 1
+elif [[ -w "$outdir" && -x "$outdir" ]];then
+	echo "Copying "$zipped" to "$outdir""
+else 
+	echo "You need write and execute perms on "$outdir""
+	exit 1
+fi
 
 echo -e "\n#########################################\n"
 # Archive and compress
