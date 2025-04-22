@@ -16,7 +16,7 @@ read -p "Enter option: " comp
 if [[ "$comp" == "q" ]];then
 	exit 0
 elif [[ "$comp" =~ ^[1-4]$ ]];then
-	:
+	echo "$comp"
 else
 	echo "Invalid input"
 	exit 1
