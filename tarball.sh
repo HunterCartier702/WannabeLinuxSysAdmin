@@ -72,22 +72,22 @@ echo -e "\n#########################################\n"
 # Archive and compress
 case $comp in
 	1)
-		output="$outdir/$(date +%Y-%m-%d)_$base.tar.gz"
+		output="$outdir/$(date +%F)_$base.tar.gz"
 		echo "Archive $output created from:"
 		tar -czvf "$output" "$zipped"
 		;;
 	2)
-		output="$outdir/$(date +%Y-%m-%d)_$base.tar.bz2"
+		output="$outdir/$(date +%F)_$base.tar.bz2"
 		echo "Archive $output created from:"
 		tar -cjvf "$output" "$zipped"
 		;;
 	3)
-		output="$outdir/$(date +%Y-%m-%d)_$base.tar.xz"
+		output="$outdir/$(date +%F)_$base.tar.xz"
 		echo "Archive $output created from:"
 		tar -cJvf "$output" "$zipped"
 		;;
 	4)
-		output="$outdir/$(date +%Y-%m-%d)_$base.tar.lz"
+		output="$outdir/$(date +%F)_$base.tar.lz"
 		echo "Archive $output created from:"
 		tar -lzip -cvf "$output" "$zipped"
 		;;
