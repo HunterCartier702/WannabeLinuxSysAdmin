@@ -5,7 +5,7 @@
 # I would type this command out all the time 
 # If you're always doing something more than once than why not automate it no matter how simple
 
-# Example: man tar | grep -C3 "\-C"
+# Example: man tar | grep -C2 "\-C"
 
 read -p "Enter tool: " tool
 read -p "Enter flag: " flag
