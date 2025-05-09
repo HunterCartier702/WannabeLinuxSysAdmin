@@ -10,4 +10,4 @@
 read -p "Enter tool: " tool
 read -p "Enter flag: " flag
 
-man $tool | grep -C3 "\\-$flag"
+man $tool | grep -C2 "\\-$flag"
