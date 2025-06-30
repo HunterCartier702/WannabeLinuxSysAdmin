@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Mostly useless script, but good practice
+# This script covers a lot of concepts I learned and combines them
 
 echo "****Archive and Compress***"
 echo -e "Enter compression type to use: \n"
