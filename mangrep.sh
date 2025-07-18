@@ -2,12 +2,11 @@
 
 # I added this to my $PATH so I can call it from anywhere
 # I personally think it is useful if you are curious about a flag from a man page and just want to check it fast.
-# I would type this command out all the time 
-# If you're always doing something more than once then why not automate it no matter how simple
+# I would manually type this command out all the time 
 
-# Example: man tar | grep -C2 "\-C"
+# Example: man tar | grep -A2 "\-C"
 
 read -p "Enter tool: " tool
 read -p "Enter flag: " flag
 
-man $tool | grep -C2 "\\-$flag"
+man $tool | grep -A2 "\\-$flag"
