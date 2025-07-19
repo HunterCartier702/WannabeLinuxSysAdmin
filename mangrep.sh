@@ -9,4 +9,4 @@
 read -p "Enter tool: " tool
 read -p "Enter flag: " flag
 
-man $tool | grep -A2 "\\-$flag"
+man $tool | grep -A2 "\-$flag"
