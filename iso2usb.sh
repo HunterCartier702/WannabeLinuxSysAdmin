@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Write an ISO to USB
-# I have a directory full of iso's and I am always trying new distros. This help automate some of the task
 
 info()
 {
