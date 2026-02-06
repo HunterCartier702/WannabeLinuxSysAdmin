@@ -1,0 +1,59 @@
+---
+- name: Setting up CUPS on a host
+  hosts: "{{ node }}" # !--Update node--!
+  vars:
+    cups_user: "{{ username }}" # Update $USER
+  tasks: 
+    - name: Install Packages
+      ansible.builtin.apt:
+        name: 
+          - cups
+          - avahi-daemon
+          - colord
+          - hplip # for hp printers
+          - printer-driver-gutenprint 
+        state: latest
+        update_cache: true
+
+    - name: Add user to lpadmin group
+      ansible.builtin.user:
+        name: "{{ cups_user }}"
+        groups: lpadmin
+        append: true
+
+    - name: Backup cupsd.conf file
+      ansible.builtin.copy:
+        src: /etc/cups/cupsd.conf
+        dest: /etc/cups/cupsd.conf.original
+        remote_src: true
+
+    - name: Listen on the LAN interface
+      ansible.builtin.lineinfile:
+        path: /etc/cups/cupsd.conf
+        regexp: '^Listen localhost:631$'
+        line: 'Listen {{ ansible_default_ipv4.address }}:631'
+      notify: Restart cups
+    
+    - name: CUPS web interface listens from localhost only. Allow access from other computers in the same network
+      ansible.builtin.lineinfile:
+        path: /etc/cups/cupsd.conf
+        insertafter: '^<Location />$'
+        line: '  Allow @LOCAL'
+      notify: Restart cups
+
+    - name: Edit /admin to allow for remote administration in local network
+      ansible.builtin.lineinfile:
+        path: /etc/cups/cupsd.conf
+        insertafter: '^<Location /admin>$'
+        line: '  Allow @LOCAL'
+      notify: Restart cups
+
+    - name: Print Completion Message
+      ansible.builtin.debug:
+        msg: "Visit: http://{{ ansible_default_ipv4.address }}:631 for admin panel"
+
+  handlers:
+    - name: Restart cups
+      ansible.builtin.service:
+        name: cups
+        state: restarted
