@@ -32,6 +32,7 @@
         path: /etc/cups/cupsd.conf
         regexp: '^Listen localhost:631$'
         line: 'Listen {{ ansible_default_ipv4.address }}:631'
+        validate: /usr/sbin/cupsd -t
       notify: Restart cups
     
     - name: CUPS web interface listens from localhost only. Allow access from other computers in the same network
@@ -39,6 +40,7 @@
         path: /etc/cups/cupsd.conf
         insertafter: '^<Location />$'
         line: '  Allow @LOCAL'
+        validate: /usr/sbin/cupsd -t
       notify: Restart cups
 
     - name: Edit /admin to allow for remote administration in local network
@@ -46,6 +48,7 @@
         path: /etc/cups/cupsd.conf
         insertafter: '^<Location /admin>$'
         line: '  Allow @LOCAL'
+        validate: /usr/sbin/cupsd -t
       notify: Restart cups
 
     - name: Print Completion Message
