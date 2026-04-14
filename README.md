@@ -1,4 +1,4 @@
 # WannabeLinuxSysAdmin
-Practice for BASH scripting linux tasks
+Practicing BASH scripting linux tasks
 
-If you are going to do a job more than once, script it.
+Some scripts I created because I was doing something repetitive, but some were made just for practice to stay sharp on the keyboard.
