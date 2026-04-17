@@ -10,7 +10,7 @@ function usage
 }
 
 if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" ]];then
-	usage "<script1>" "[arg2...]"
+	usage "<arg1>" "[arg2...]"
 	exit
 fi
 
