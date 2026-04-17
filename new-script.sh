@@ -7,11 +7,11 @@ function usage
 	# Strip off the full path and "pretty print" only the script name itself
 	script=${0##*/}
 	echo "Usage: $script $@"
-	exit 1
 }
 
 if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" ]];then
 	usage "<script1>" "[arg2...]"
+	exit
 fi
 
 for arg in "$@";do
