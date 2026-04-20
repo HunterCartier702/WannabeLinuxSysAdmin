@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Create 1 or more blank bash script templates
 # Add to /usr/local/bin if it is in your $PATH for quick access
 
@@ -19,7 +19,7 @@ for arg in "$@";do
 		echo -e "\n$arg already exists, skipping..\n"
 		continue
 	else
-		echo -e '#!/bin/bash\n' > "$arg"
+		echo -e '#!/usr/bin/env bash\n' > "$arg"
 		chmod u+x "$arg"
 		echo "------------------"
 		echo -e "Created $arg\nContents:"
