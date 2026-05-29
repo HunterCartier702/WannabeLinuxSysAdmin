@@ -13,15 +13,15 @@ RST=$'\e[0m'
 
 # Update color vars based on percentage
 get_color() {
-  local percent=$1
+	local percent=$1
 
-  if (( percent >= 60 )); then
-      printf '%s' "$RED"
-  elif (( percent >= 40 )); then
-      printf '%s' "$YELLOW"
-  else
-      printf '%s' "$GREEN"
-  fi
+	if (( percent >= 60 )); then
+		printf '%s' "$RED"
+	elif (( percent >= 40 )); then
+		printf '%s' "$YELLOW"
+	else
+		printf '%s' "$GREEN"
+	fi
 }
 
 # Read and format memory output
@@ -44,8 +44,8 @@ get_memory()
 	swap_used=$(( swap_total - swap_free ))
 	swap_perc=$(( swap_used * 100 / swap_total ))
 
-  color=$(get_color "$mem_perc")
-  color2=$(get_color "$swap_perc")
+	color=$(get_color "$mem_perc")
+	color2=$(get_color "$swap_perc")
 
 	printf "%s%-11s\n\t%6d MiB (%d%%)%s\n" "$color" "MemUsed:" "$mem_used" "$mem_perc" "$RST"
 	printf "%s%-11s\n\t%6d MiB%s\n" "$color" "MemAvail:"  "$mem_avail" "$RST"
