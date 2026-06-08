@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 # Having fun with "pure bash"
 # Read basic memory stats and cpu usage in an alternate buffer that refreshes the data every 2 seconds
+# an alternate buffer is a separate temporary screen
 
 MEM_FILE=/proc/meminfo
 CPU_FILE=/proc/stat
-CYAN=$'\e[38;5;16;48;2;3;237;249m' 
 RED=$'\e[1;31m'
 GREEN=$'\e[0;32m'
 YELLOW=$'\e[0;33m'
 TOTALS=$'\e[38;2;254;126;219m' 
 RST=$'\e[0m'
 
-# count cpus from /proc/stat using pattern matching to match 'cpuNN'
+# count cpus from /proc/stat using simple regex to match 'cpuNN'
 count_cpus()
 {
 	cores=0
 	while read -r core _; do
-		[[ $core == cpu[0-9]* ]] && ((cores++))
+		[[ $core =~ cpu[0-9]+ ]] && ((cores++))
 	done < "$CPU_FILE"
 }
 
@@ -59,7 +59,7 @@ get_color() {
 get_memory()
 {
 	printf -v now '%(%Y-%m-%d %H:%M:%S)T'
-	echo -e "${CYAN}Memory Usage on $HOSTNAME - $now${RST}\n"
+	echo -e "Memory Usage on $HOSTNAME - $now\n"
 	while IFS=":" read -r key value; do
 		case "$key" in 
 			"MemTotal") mem_total=$(( ${value/kB} / 1024 )) ;;
@@ -104,7 +104,6 @@ cleanup()
 main()
 {
 	count_cpus
-	# an alternate buffer is a separate temporary screen
 	trap cleanup EXIT
 	printf '\e[?1049h' # enable alternate buffer
 	printf '\e[?25l' # hide the cursor
