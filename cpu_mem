@@ -16,7 +16,7 @@ count_cpus()
 {
 	cores=0
 	while read -r core _; do
-		[[ $core =~ cpu[0-9]+ ]] && ((cores++))
+		[[ $core =~ ^cpu[0-9]+$ ]] && ((cores++))
 	done < "$CPU_FILE"
 }
 
