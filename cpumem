@@ -76,6 +76,7 @@ cleanup()
 {
 	printf '\e[?1049l' # disable alternate buffer
 	printf '\e[?25h' # show the cursor
+	get_memory
 }
 
 
