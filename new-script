@@ -1,29 +1,27 @@
 #!/usr/bin/env bash
-# Create 1 or more blank bash script templates
-# Add to /usr/local/bin if it is in your $PATH for quick access
+# Quickly create blank bash script templates
+# Takes one or more script names as arguments,
+# creates the files in the curent directory if they don't exist, 
+# and give the current user executable permissions
 
 usage()
 {
-	# Strip off the full path and "pretty print" only the script name itself
-	script=${0##*/}
-	echo "Usage: $script $@"
+	echo "Usage: ${0##*/} $@"
 }
 
-if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" ]];then
-	usage "<arg1>" "[arg2...]"
-	exit
-fi
-
-for arg in "$@";do
-	if [ -a "$arg" ];then
-		echo -e "\n$arg already exists, skipping..\n"
+[[ $# -lt 1 ]] && usage "<arg1>" "[arg2..]" && exit 1
+	
+for arg in "$@"
+do
+	if [[ -e $arg ]]; then
+		echo "'$arg' already exists. Skipping.."
 		continue
 	else
-		echo -e '#!/usr/bin/env bash\n' > "$arg"
+		echo '#!/usr/bin/env bash' > "$arg"
 		chmod u+x "$arg"
-		echo "------------------"
-		echo -e "Created $arg\nContents:"
-		cat "$arg"
-		echo "------------------"
+		echo "---------------------------"
+		echo "Created:  $arg"
+		echo "Perms:    $(ls -l "$arg")"
+		echo "---------------------------"
 	fi
 done
