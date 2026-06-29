@@ -3,7 +3,11 @@
 # Takes one or more script names as arguments,
 # creates the files in the curent directory if they don't exist, 
 # and give the current user executable permissions
+# Simplicity
 
+script=1
+
+# strip any leading extra /'s
 usage()
 {
 	echo "Usage: ${0##*/} $@"
@@ -20,8 +24,10 @@ do
 		echo '#!/usr/bin/env bash' > "$arg"
 		chmod u+x "$arg"
 		echo "---------------------------"
+		echo "File:     #$script"
 		echo "Created:  $arg"
-		echo "Perms:    $(ls -l "$arg")"
+		echo "Perms:    $(ls -l "$arg")" # '$arg' quoted for weirdo's that use white-space in filenames
 		echo "---------------------------"
 	fi
+	((script++))
 done
