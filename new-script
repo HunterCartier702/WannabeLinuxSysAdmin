@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # Quickly create blank bash script templates
 # Takes one or more script names as arguments,
-# creates the files in the curent directory if they don't exist, 
+# creates the files if they don't exist, 
 # and give the current user executable permissions
-# Simplicity
 
 script=1
 
