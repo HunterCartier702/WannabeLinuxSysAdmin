@@ -10,9 +10,10 @@ script=1
 usage()
 {
 	echo "Usage: ${0##*/} $@"
+	return 
 }
 
-[[ $# -lt 1 ]] && usage "<arg1>" "[arg2..]" && exit 1
+[[ $# -lt 1 ]] && usage "<arg1>" "[arg2..]" 
 	
 for arg in "$@"
 do
