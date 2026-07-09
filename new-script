@@ -26,7 +26,7 @@ do
 		echo "---------------------------"
 		echo "File:     #$script"
 		echo "Created:  $arg"
-		echo "Perms:    $(ls -l "$arg")" # '$arg' quoted for weirdo's that use white-space in filenames
+		echo "Perms:    $(ls -l "$arg")"
 		echo "---------------------------"
 	fi
 	((script++))
