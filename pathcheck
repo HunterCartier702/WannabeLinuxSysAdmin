@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# Verifies the integrity of executable files in your PATH by comparing their SHA-256 hashes against a baseline.
+
+store_dir="/home/$USER/.checksums"
+store_file="stored"
+storage="$store_dir/$store_file"
+
+# Count files in PATH and add to an array
+count_files_in_path()
+{
+	# nullglob prevents matching of '/usr/local/sbin/*'
+	# the * glob becomes a literal * in an empty directory otherwise
+	local directory command
+	shopt -s nullglob
+	count=0
+	files=()
+
+	IFS=: read -ra pathdirs <<< "$PATH"
+	for directory in "${pathdirs[@]}"; do
+		[[ -d "$directory" ]] || continue
+			for command in "$directory"/*; do
+				[[ -f $command ]] || continue
+				files+=("$command")
+				((count++))
+			done
+	done
+}
+
+# Initially store checksum file or update file
+create_baseline()
+{
+	{
+	for file in "${files[@]}"; do
+		sha256sum "$file"
+	done
+	} | sort > "$storage"
+}
+
+# Create directory where checksum file will be stored
+create_dir()
+{
+	if [[ ! -d "$store_dir" ]]; then
+		echo "Creating '$store_dir' directory for storage"
+		mkdir "$store_dir"
+	fi
+}
+
+# Create file where checksums will be stored
+create_file()
+{
+	if [[ ! -f "$storage" ]]; then
+		echo "Creating '$storage' file for storage"
+		: > "$storage"
+		chmod 600 "$storage"
+		echo "Updating '$storage' file..."
+		# Call function that stores initial checksums
+		create_baseline
+	fi
+}
+
+# mv old checksum file and replace it with updated values
+update_baseline()
+{
+	mv "$storage" "${storage}.old"	
+	create_baseline
+}
+
+# Compare checksum files and only show non mathcing lines in each file.
+compare_baseline()
+{
+	if [[ -z $(comm -3 "${storage}.old" "$storage") ]]; then
+		echo "Files are the same, OK."
+	else
+		comm -3 "${storage}.old" "$storage"
+	fi
+}
+
+# Check checksum file and print only errors: 'FAILED'
+verify_baseline()
+{
+	if [[ -z $(sha256sum --quiet -c "$storage") ]]; then
+		echo "No files changed, OK."
+	else
+		sha256sum --quiet -c "$storage"
+	fi
+}
+
+main()
+{
+	count_files_in_path
+	create_dir
+	create_file
+	echo
+	PS3="Enter option number: "
+	select option in "Check Checksums" "Compare Checksums" "View File Count in PATH" "quit"
+	do
+		case "$option" in
+			"Check Checksums" )
+				# do first before updating and comparing checksums
+				verify_baseline 
+				;;
+			"Compare Checksums" )
+				update_baseline
+				compare_baseline
+				;;
+			"View File Count in PATH" )
+				echo "$count files located in PATH" 
+				;;
+			"quit" )
+				break                               
+				;;
+			* )
+				echo "Incorrect input. Try again." 
+		esac
+		echo
+	done
+}
+
+main
