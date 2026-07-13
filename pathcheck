@@ -65,7 +65,7 @@ update_baseline()
 	create_baseline
 }
 
-# Compare checksum files and only show non mathcing lines in each file.
+# Compare checksum files and only show non matching lines in each file.
 compare_baseline()
 {
 	if [[ -z $(comm -3 "${storage}.old" "$storage") ]]; then
