@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Check if a newer version of a downloaded docker image on your system is available
+
+function image_array
+{
+	while read -r line
+	do
+		images+=("$line")
+	done < <(docker image ls --format '{{.Repository}}:{{.Tag}}')
+	images+=(quit)
+}
+
+function check_image
+{
+	local img=$1
+	local_digest=$(docker image ls -q --no-trunc "$img")
+	remote_digest=$(docker buildx imagetools inspect "$img" 2>/dev/null | awk '/Digest:/ {print $2; exit}')
+
+	echo "Checking '$img'..."
+
+	if [[ -z $remote_digest ]]; then
+		echo -e "\t[-] Couldn't retrieve remote digest"
+		echo -e "\t[-] Could be a locally created image"
+		return
+	fi
+
+	echo "Local : $local_digest"
+	echo "Remote: $remote_digest"
+
+	if [[ $local_digest == $remote_digest ]]; then
+		echo -e "\t[+] Image is up to date"
+	else
+		echo -e "\t[X] Image is not up to date"
+		echo -e "\t[X] Read changelog before updating"
+	fi
+}
+
+function main
+{
+	image_array
+	echo "Local Images:"	
+	PS3="Select # for image to check: "
+	select image in "${images[@]}"
+	do
+		case $image in
+			quit ) 
+				break 
+				;;
+			""   )
+				echo "Invalid option" 
+				;;
+			*    )
+				check_image "$image"
+				;;
+		esac
+	done
+}
+
+main
