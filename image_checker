@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Check if a newer version of a downloaded docker image on your system is available
+# Requires: https://docs.docker.com/engine/install/
 
 function image_array
 {
