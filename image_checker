@@ -7,7 +7,6 @@ function image_array
 	do
 		images+=("$line")
 	done < <(docker image ls --format '{{.Repository}}:{{.Tag}}')
-	images+=(quit)
 }
 
 function check_image
@@ -16,7 +15,7 @@ function check_image
 	local_digest=$(docker image ls -q --no-trunc "$img")
 	remote_digest=$(docker buildx imagetools inspect "$img" 2>/dev/null | awk '/Digest:/ {print $2; exit}')
 
-	echo "Checking '$img'..."
+	echo "Checking ---${img}---"
 
 	if [[ -z $remote_digest ]]; then
 		echo -e "\t[-] Couldn't retrieve remote digest"
@@ -35,12 +34,20 @@ function check_image
 	fi
 }
 
+function check_all
+{
+	for sha in "${images[@]}"
+	do
+		check_image "$sha"
+	done
+}
+
 function main
 {
 	image_array
 	echo "Local Images:"	
 	PS3="Select # for image to check: "
-	select image in "${images[@]}"
+	select image in "${images[@]}" "check all" quit
 	do
 		case $image in
 			quit ) 
@@ -48,6 +55,10 @@ function main
 				;;
 			""   )
 				echo "Invalid option" 
+				;;
+			"check all")
+				check_all
+				break
 				;;
 			*    )
 				check_image "$image"
