@@ -8,10 +8,6 @@
       ansible.builtin.apt:
         name: 
           - cups
-          - avahi-daemon
-          - colord
-          - hplip # for hp printers
-          - printer-driver-gutenprint 
         state: latest
         update_cache: true
 
