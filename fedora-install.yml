@@ -1,0 +1,38 @@
+---
+- name: Playbook to install packages on a fresh Fedora install
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+    - name: Install my usual packages
+      ansible.builtin.dnf:
+        name:
+          - rsync
+          - vim
+          - autofs
+          - btop
+          - tmux
+        state: latest
+        update_cache: true
+
+    # flathub not on fedora by default
+    - name: Add Flathub remote
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+
+    - name: Install my preferred flatpaks
+      community.general.flatpak:
+        name:
+          - org.prismlauncher.PrismLauncher
+          - com.bitwarden.desktop
+          - com.brave.Browser
+          - com.discordapp.Discord
+          - com.obsproject.Studio
+          - com.sublimehq.SublimeText
+        state: latest
+          
+# This module is part of the community.general collection (version 13.2.0).
+# You might already have this collection installed if you are using the ansible package. It is not included in ansible-core. To check whether it is installed, run ansible-galaxy collection list.
+# To install it, use: ansible-galaxy collection install community.general. 
