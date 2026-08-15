@@ -1,0 +1,775 @@
+#!/usr/bin/env bash
+# A very simple version of Blackjack in bash
+# Press 'y' to hit, 'n' to stay. Dealer doesn't hit above 15. 
+# If the current card you draw is an ace and it causes you to go over 21, the ace will -eq 1 instead of 11 and continue
+# That's all
+
+RED=$'\e[1;31m'
+GREEN=$'\e[0;32m'
+YELLOW=$'\e[0;33m'
+RST=$'\e[0m'
+chips=100
+
+# Spade ♠
+s=$(printf '%b\n' $'\u2660')
+# Heart ♥
+h=$(printf '%b\n' $'\u2665')
+# Diamond ♦
+d=$(printf '%b\n' $'\u2666')
+# Club ♣
+c=$(printf '%b\n' $'\u2663')
+
+# ---The actual code starts at line 532---
+
+# I need to figure out how to create these repetitive functions dynamically, but for now this will do
+# Sorry about the length. 
+function black {
+cat << 'EOF'
+__________.__                 __
+\______   \  | _____    ____ |  | __
+ |    |  _/  | \__  \ _/ ___\|  |/ /
+ |    |   \  |__/ __ \\  \___|    <
+ |______  /____(____  /\___  >__|_ \
+        \/          \/     \/     \/
+EOF
+}
+
+function jack {
+cat << 'EOF'
+     __               __
+    |__|____    ____ |  | __
+    |  \__  \ _/ ___\|  |/ /
+    |  |/ __ \\  \___|    <
+/\__|  (____  /\___  >__|_ \
+\______|    \/     \/     \/
+
+EOF
+}
+
+function bashful {
+cat << 'EOF'
+__________               .__
+\______   \_____    _____|  |__
+ |    |  _/\__  \  /  ___/  |  \
+ |    |   \ / __ \_\___ \|   Y  \
+ |______  /(____  /____  >___|  /
+        \/      \/     \/     \/
+EOF
+}
+
+# SPADES
+function _A_spades {
+printf '%s\n' \
+' -------' \
+"|A$s     |" \
+'|       |' \
+"|     A$s|" \
+' -------'
+}
+
+function _2_spades {
+printf '%s\n' \
+' -------' \
+"|2$s     |" \
+'|       |' \
+"|     2$s|" \
+' -------'
+}
+
+function _3_spades {
+printf '%s\n' \
+' -------' \
+"|3$s     |" \
+'|       |' \
+"|     3$s|" \
+' -------'
+}
+
+function _4_spades {
+printf '%s\n' \
+' -------' \
+"|4$s     |" \
+'|       |' \
+"|     4$s|" \
+' -------'
+}
+
+function _5_spades {
+printf '%s\n' \
+' -------' \
+"|5$s     |" \
+'|       |' \
+"|     5$s|" \
+' -------'
+}
+
+function _6_spades {
+printf '%s\n' \
+' -------' \
+"|6$s     |" \
+'|       |' \
+"|     6$s|" \
+' -------'
+}
+
+function _7_spades {
+printf '%s\n' \
+' -------' \
+"|7$s     |" \
+'|       |' \
+"|     7$s|" \
+' -------'
+}
+
+function _8_spades {
+printf '%s\n' \
+' -------' \
+"|8$s     |" \
+'|       |' \
+"|     8$s|" \
+' -------'
+}
+
+function _9_spades {
+printf '%s\n' \
+' -------' \
+"|9$s     |" \
+'|       |' \
+"|     9$s|" \
+' -------'
+}
+
+function _10_spades {
+printf '%s\n' \
+' -------' \
+"|10$s    |" \
+'|       |' \
+"|    10$s|" \
+' -------'
+}
+
+function _J_spades {
+printf '%s\n' \
+' -------' \
+"|J$s     |" \
+'|       |' \
+"|     J$s|" \
+' -------'
+}
+
+function _Q_spades {
+printf '%s\n' \
+' -------' \
+"|Q$s     |" \
+'|       |' \
+"|     Q$s|" \
+' -------'
+}
+
+function _K_spades {
+printf '%s\n' \
+' -------' \
+"|K$s     |" \
+'|       |' \
+"|     K$s|" \
+' -------'
+}
+
+# HEARTS
+function _A_hearts {
+printf '%s\n' \
+' -------' \
+"|A$h     |" \
+'|       |' \
+"|     A$h|" \
+' -------'
+}
+
+function _2_hearts {
+printf '%s\n' \
+' -------' \
+"|2$h     |" \
+'|       |' \
+"|     2$h|" \
+' -------'
+}
+
+function _3_hearts {
+printf '%s\n' \
+' -------' \
+"|3$h     |" \
+'|       |' \
+"|     3$h|" \
+' -------'
+}
+
+function _4_hearts {
+printf '%s\n' \
+' -------' \
+"|4$h     |" \
+'|       |' \
+"|     4$h|" \
+' -------'
+}
+
+function _5_hearts {
+printf '%s\n' \
+' -------' \
+"|5$h     |" \
+'|       |' \
+"|     5$h|" \
+' -------'
+}
+
+function _6_hearts {
+printf '%s\n' \
+' -------' \
+"|6$h     |" \
+'|       |' \
+"|     6$h|" \
+' -------'
+}
+
+function _7_hearts {
+printf '%s\n' \
+' -------' \
+"|7$h     |" \
+'|       |' \
+"|     7$h|" \
+' -------'
+}
+
+function _8_hearts {
+printf '%s\n' \
+' -------' \
+"|8$h     |" \
+'|       |' \
+"|     8$h|" \
+' -------'
+}
+
+function _9_hearts {
+printf '%s\n' \
+' -------' \
+"|9$h     |" \
+'|       |' \
+"|     9$h|" \
+' -------'
+}
+
+function _10_hearts {
+printf '%s\n' \
+' -------' \
+"|10$h    |" \
+'|       |' \
+"|    10$h|" \
+' -------'
+}
+
+function _J_hearts {
+printf '%s\n' \
+' -------' \
+"|J$h     |" \
+'|       |' \
+"|     J$h|" \
+' -------'
+}
+
+function _Q_hearts {
+printf '%s\n' \
+' -------' \
+"|Q$h     |" \
+'|       |' \
+"|     Q$h|" \
+' -------'
+}
+
+function _K_hearts {
+printf '%s\n' \
+' -------' \
+"|K$h     |" \
+'|       |' \
+"|     K$h|" \
+' -------'
+}
+
+# DIAMONDS
+function _A_diamonds {
+printf '%s\n' \
+' -------' \
+"|A$d     |" \
+'|       |' \
+"|     A$d|" \
+' -------'
+}
+
+function _2_diamonds {
+printf '%s\n' \
+' -------' \
+"|2$d     |" \
+'|       |' \
+"|     2$d|" \
+' -------'
+}
+
+function _3_diamonds {
+printf '%s\n' \
+' -------' \
+"|3$d     |" \
+'|       |' \
+"|     3$d|" \
+' -------'
+}
+
+function _4_diamonds {
+printf '%s\n' \
+' -------' \
+"|4$d     |" \
+'|       |' \
+"|     4$d|" \
+' -------'
+}
+
+function _5_diamonds {
+printf '%s\n' \
+' -------' \
+"|5$d     |" \
+'|       |' \
+"|     5$d|" \
+' -------'
+}
+
+function _6_diamonds {
+printf '%s\n' \
+' -------' \
+"|6$d     |" \
+'|       |' \
+"|     6$d|" \
+' -------'
+}
+
+function _7_diamonds {
+printf '%s\n' \
+' -------' \
+"|7$d     |" \
+'|       |' \
+"|     7$d|" \
+' -------'
+}
+
+function _8_diamonds {
+printf '%s\n' \
+' -------' \
+"|8$d     |" \
+'|       |' \
+"|     8$d|" \
+' -------'
+}
+
+function _9_diamonds {
+printf '%s\n' \
+' -------' \
+"|9$d     |" \
+'|       |' \
+"|     9$d|" \
+' -------'
+}
+
+function _10_diamonds {
+printf '%s\n' \
+' -------' \
+"|10$d    |" \
+'|       |' \
+"|    10$d|" \
+' -------'
+}
+
+function _J_diamonds {
+printf '%s\n' \
+' -------' \
+"|J$d     |" \
+'|       |' \
+"|     J$d|" \
+' -------'
+}
+
+function _Q_diamonds {
+printf '%s\n' \
+' -------' \
+"|Q$d     |" \
+'|       |' \
+"|     Q$d|" \
+' -------'
+}
+
+function _K_diamonds {
+printf '%s\n' \
+' -------' \
+"|K$d     |" \
+'|       |' \
+"|     K$d|" \
+' -------'
+}
+
+# CLUBS
+function _A_clubs {
+printf '%s\n' \
+' -------' \
+"|A$c     |" \
+'|       |' \
+"|     A$c|" \
+' -------'
+}
+
+function _2_clubs {
+printf '%s\n' \
+' -------' \
+"|2$c     |" \
+'|       |' \
+"|     2$c|" \
+' -------'
+}
+
+function _3_clubs {
+printf '%s\n' \
+' -------' \
+"|3$c     |" \
+'|       |' \
+"|     3$c|" \
+' -------'
+}
+
+function _4_clubs {
+printf '%s\n' \
+' -------' \
+"|4$c     |" \
+'|       |' \
+"|     4$c|" \
+' -------'
+}
+
+function _5_clubs {
+printf '%s\n' \
+' -------' \
+"|5$c     |" \
+'|       |' \
+"|     5$c|" \
+' -------'
+}
+
+function _6_clubs {
+printf '%s\n' \
+' -------' \
+"|6$c     |" \
+'|       |' \
+"|     6$c|" \
+' -------'
+}
+
+function _7_clubs {
+printf '%s\n' \
+' -------' \
+"|7$c     |" \
+'|       |' \
+"|     7$c|" \
+' -------'
+}
+
+function _8_clubs {
+printf '%s\n' \
+' -------' \
+"|8$c     |" \
+'|       |' \
+"|     8$c|" \
+' -------'
+}
+
+function _9_clubs {
+printf '%s\n' \
+' -------' \
+"|9$c     |" \
+'|       |' \
+"|     9$c|" \
+' -------'
+}
+
+function _10_clubs {
+printf '%s\n' \
+' -------' \
+"|10$c    |" \
+'|       |' \
+"|    10$c|" \
+' -------'
+}
+
+function _J_clubs {
+printf '%s\n' \
+' -------' \
+"|J$c     |" \
+'|       |' \
+"|     J$c|" \
+' -------'
+}
+
+function _Q_clubs {
+printf '%s\n' \
+' -------' \
+"|Q$c     |" \
+'|       |' \
+"|     Q$c|" \
+' -------'
+}
+
+function _K_clubs {
+printf '%s\n' \
+' -------' \
+"|K$c     |" \
+'|       |' \
+"|     K$c|" \
+' -------'
+}
+
+# Create a 6 decks with 4 suits and 13 ranks. 52 cards each, 312 cards total
+function initialize_deck {
+	suits=(hearts diamonds clubs spades)
+	ranks=(A 2 3 4 5 6 7 8 9 10 J Q K)
+	local i suit rank
+	for i in {1..6}; do # (deck size 6)
+		for suit in "${suits[@]}"; do
+			for rank in "${ranks[@]}";do
+				decks+=("${rank}_${suit}")
+			done
+		done
+	done
+}
+
+function deal_card {
+	# represents where the card is(index[0])
+	local index=$(( RANDOM % ${#decks[@]} ))
+	# represents what the card is(value[A_spades])
+	local card=${decks[index]}
+	# Isolating a cards 'rank' to set a numerical value
+	local rank=${card%%_*}
+	case $rank in
+		[2-9]|10) card_value=$rank   ;; 
+		[JQK]   ) card_value=10      ;;
+		A       ) card_value=11      ;;
+	esac
+	
+	# $1=$LINE $2=$COLUMN
+	local i=$1
+	local j=$2
+	local line 
+	# makes it so cards print next to eachother 
+	while IFS= read -r line; do
+		printf "\e[$i;${j}H"
+		printf '%s' "$line"
+		((i++))
+		# '$card' now expands into a function card name which then prints the ascii card
+	done< <(_"$card")
+	echo
+	unset "decks[$index]" # remove card from deck(array)
+	decks=("${decks[@]}") # reindex the array
+}
+
+function check_blackjack {
+	# $1 will be either player_total or dealer_total
+	local check_total=$1
+	if [[ $check_total -eq 21 ]]; then
+		printf "\e[20;0H" # move cursor to line 16 col 0
+		echo "***BLACKJACK***"
+		who_won
+		sleep 3
+		printf '\e[2J' # clear the screen
+		printf '\e[H' # move the cursor home
+		return 1
+	fi
+
+	return 0
+}
+
+function read_hit {
+	printf "\e[18;0H" # move cursor to line 18 col 0
+	read -sn1 -p "[Hits: $itr] Hit(y) Stay(n) " hit
+}
+
+function player_draw {
+	# line=$1, column=$2, $hit=$3, 
+	local ln=$1
+	local cl=$2
+	local itr=0
+	read_hit
+	while [[ $hit == "y" ]]; do
+		case $hit in 
+			"y") 
+				deal_card "$ln" "$cl"      
+				ace_lower "player_total"
+				((itr++))
+				echo "${GREEN}Total: $player_total${RST}"
+				if [[ $player_total -gt 21 ]]; then
+					echo "${RED}Player !--BUST--!${RST}"
+					((chips--))
+					printf "\e[18;0H" # move cursor to line 18 col 0
+					printf "[Hits: $itr] Hit(y) Stay(n)"
+					printf "\e[21;0H" # move cursor to line 21 col 0
+					echo "${RED}Dealer Wins!${RST}"
+					sleep 3
+					printf '\e[2J' # clear the screen
+					printf '\e[H' # move the cursor home
+					return 1
+				elif [[ $player_total -eq 21 ]]; then
+					printf "\e[20;0H" # move cursor to line 20 col 0
+					echo "${GREEN}Player ***BLACKJACK***${RST}"
+					((chips++))
+					sleep 3
+					printf '\e[2J' # clear the screen
+					printf '\e[H' # move the cursor home
+					return 1
+				fi
+				;;
+		esac
+		# move column over 10 for each card drawn to prevent overlap when ascii card is printed
+		((cl+=10))
+		read_hit
+	done
+}
+
+# Repetitive I know
+function dealer_draw {
+	local ln=2
+	local cl=10 #19
+	while [[ $dealer_total -le 14 ]]; do
+		sleep 1
+		deal_card "$ln" "$cl"      
+		ace_lower "dealer_total"
+		echo "${RED}Total: $dealer_total${RST}"
+		if [[ $dealer_total -gt 21 ]]; then
+			echo "${RED}Dealer !--BUST--!${RST}"
+			printf "\e[21;0H" # move cursor to line 21 col 0
+			echo "${GREEN}Player Wins!${RST}"
+			((chips++))
+			sleep 2
+			printf '\e[2J' # clear the screen
+			printf '\e[H' # move the cursor home
+			return 1
+		elif [[ $dealer_total -eq 21 ]]; then
+			printf "\e[20;0H" # move cursor to line 20 col 0
+			echo "${RED}Dealer ***BLACKJACK***${RST}"
+			printf "\e[21;0H" # move cursor to line 21 col 0
+			echo "${RED}Dealer Wins!${RST}"
+			((chips--))
+			sleep 3
+			printf '\e[2J' # clear the screen
+			printf '\e[H' # move the cursor home
+			return 1
+		fi
+		# move column over 10 for each card drawn to prevent overlap when printed
+		((cl+=10))
+	done
+}
+
+function read_ascii {
+	local func=$1
+	local row=$2
+	local col=$3
+	local line
+
+	while IFS= read -r line; do
+		printf "\e[$row;${col}H"
+		printf '%s\n' "$line"
+		((row++))
+	done < <("$func")
+}
+
+# i dont know
+function who_won {
+	# calculate who won, move cursor, print message, add or subtract bets
+	if [[ $player_total -gt $dealer_total && $player_total -le 21 ]]; then
+		printf "\e[21;0H" # move cursor to line 21 col 0
+		echo "${GREEN}Player Wins!${RST}"
+		((chips++))
+	elif [[ $player_total -lt $dealer_total && $dealer_total -le 21 ]]; then
+		printf "\e[21;0H" # move cursor to line 21 col 0
+		echo "${RED}Dealer Wins!${RST}"
+		((chips--))
+	elif [[ $player_total -eq $dealer_total ]]; then
+		printf "\e[21;0H" # move cursor to line 21 col 0
+		echo "${YELLOW}Push${RST}"
+	fi
+}
+
+function ace_lower {
+	# $1 = dealer_total || player_total - literally
+	if [[ $1 == "dealer_total" ]]; then
+		((dealer_total+=card_value))
+		if [[ $card_value -eq 11 && $dealer_total -gt 21 ]]; then
+			# lower an ace draw to 1 if it causes dealer to bust
+			dealer_total=$((dealer_total - 10))
+		fi
+	elif [[ $1 == "player_total" ]]; then
+		((player_total+=card_value))
+		if [[ $card_value -eq 11 && $player_total -gt 21 ]]; then
+			# lower an ace draw to 1 if it causes dealer to bust
+			player_total=$((player_total - 10))
+		fi
+	fi
+}
+
+function cleanup {
+	printf '\e[?1049l' # disable alternate buffer
+	printf '\e[?25h' # show the cursor
+}
+
+# when dealing hands, give player 2 cards then dealer 1, 
+# ask player if want to hit or stay,
+# if they bust - end, if they hold, play dealer hands
+# calculate who won
+function main {
+	trap cleanup EXIT
+	trap 'exit' INT TERM HUP QUIT
+	initialize_deck
+	printf '\e[?1049h' # enable alternate buffer
+	printf '\e[?25l' # hide the cursor
+	printf '\e[H' # move the cursor home
+	printf '\033[31m'
+	sleep 1
+	read_ascii black 2 0
+	sleep 1
+	read_ascii jack 2 38
+	sleep 1
+	read_ascii bashful 8 0
+	printf '\033[0m'
+	sleep 3
+	printf '\e[2J' # clear the screen
+	printf '\e[H' # move the cursor home
+	while true; do
+		printf "\e[10;50H" # move cursor to line 21 col 0
+		echo "Chips: ${GREEN}$chips${RST}"
+		printf '\e[H' # move the cursor home
+		printf "${RED}"'\---Dealer---/'"${RST}"	
+		printf "\e[9;0H" # move cursor to line 9 col 0
+		printf "${GREEN}"'\---Player---/'"${RST}"
+		deal_card 10 0 # player first draw
+		player_total=$card_value
+		sleep 1
+		deal_card 10 10 # player second draw
+		ace_lower "player_total"
+		#((player_total+=card_value))
+		echo "${GREEN}Total: $player_total${RST}"
+		# sleep 1
+		# printing dealers first card
+		deal_card 2 0 # dealer first draw
+		dealer_total=$card_value
+		echo "${RED}Total: $dealer_total${RST}"
+		check_blackjack "$player_total" || continue # if blackjack, end now and start loop over
+		# ask user to hit or stay before finishing dealer draw unless they hit 21		
+		player_draw 10 20 "$hit" || continue
+		dealer_draw || continue # dealer starts second draw 
+		who_won
+		sleep 3
+		printf '\e[2J' # clear the screen
+		printf '\e[H' # move the cursor home
+	done
+}
+
+main
