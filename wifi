@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Connect to a WiFi network with a strong signal
+# Requires RHEL: NetworkManager or Debian: network-manager package
+# nmcli device wifi connect "YourSSID" password "YourPassword" hidden yes # connect to hidden net
+
+status=$(nmcli radio wifi) # should = enabled
+
+[[ "$status" != "enabled" ]] && { echo "WiFi disabled. Enable WiFi: 'nmcli radio wifi on'";exit 1; }
+
+echo "Scanning for available networks..."
+printf  '\n%-30s %2s\n' "SSID" "Signal"
+while IFS=: read -r ssid signal; do
+	if [[ "$signal" -ge 56 ]]; then
+		[[ -z "$ssid" ]] && continue # skip output with blank lines
+		printf '%-30s %2s\n' "$ssid" "$signal"
+		networks+=("$ssid")
+	fi
+done < <(nmcli -t -f ssid,signal device wifi list)
+echo
+PS3="Enter number for network: "
+select network in "${networks[@]}"
+do
+	case "$network" in
+		* )
+			read -s -p "Enter password to $network (authentication may take a sec): " password
+			nmcli device wifi connect "$network" password "$password"
+			echo
+			nmcli -f name,autoconnect,type,device,state c s
+			break
+	esac
+done
+
