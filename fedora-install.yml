@@ -12,6 +12,7 @@
           - autofs
           - btop
           - tmux
+          - NetworkManager-tui
         state: latest
         update_cache: true
 
