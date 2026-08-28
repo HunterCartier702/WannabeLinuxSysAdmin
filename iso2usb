@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Write an .iso or .img file to a USB using dd
-# May need to unmount partitions of device prior if there are any(e.g.): 'sudo umount /dev/sda*'
+# May need to unmount partitions of device prior if there are any(e.g.): sudo umount /dev/sda*
 
 # Takes a string as an argument to provide colored output
 info()
