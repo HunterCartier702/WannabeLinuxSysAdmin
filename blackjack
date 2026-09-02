@@ -2,7 +2,6 @@
 # A very simple version of Blackjack in bash
 # Press 'y' to hit, 'n' to stay. Dealer doesn't hit above 15. 
 # If the current card you draw is an ace and it causes you to go over 21, the ace will -eq 1 instead of 11 and continue
-# That's all
 
 RED=$'\e[1;31m'
 GREEN=$'\e[0;32m'
@@ -576,7 +575,7 @@ function check_blackjack {
 	# $1 will be either player_total or dealer_total
 	local check_total=$1
 	if [[ $check_total -eq 21 ]]; then
-		printf "\e[20;0H" # move cursor to line 20 col 0
+		printf "\e[20;0H" # move cursor to line 16 col 0
 		echo "***BLACKJACK***"
 		who_won
 		sleep 3
@@ -637,7 +636,7 @@ function player_draw {
 # Repetitive I know
 function dealer_draw {
 	local ln=2
-	local cl=10 #19
+	local cl=10 
 	while [[ $dealer_total -le 14 ]]; do
 		sleep 1
 		deal_card "$ln" "$cl"      
@@ -681,7 +680,6 @@ function read_ascii {
 	done < <("$func")
 }
 
-# i dont know
 function who_won {
 	# calculate who won, move cursor, print message, add or subtract bets
 	if [[ $player_total -gt $dealer_total && $player_total -le 21 ]]; then
@@ -709,7 +707,7 @@ function ace_lower {
 	elif [[ $1 == "player_total" ]]; then
 		((player_total+=card_value))
 		if [[ $card_value -eq 11 && $player_total -gt 21 ]]; then
-			# lower an ace draw to 1 if it causes dealer to bust
+			# lower an ace draw to 1 if it causes player to bust
 			player_total=$((player_total - 10))
 		fi
 	fi
@@ -721,7 +719,7 @@ function cleanup {
 }
 
 # when dealing hands, give player 2 cards then dealer 1, 
-# ask player if want to hit or stay,
+# ask player if wants to hit or stay,
 # if they bust - end, if they hold, play dealer hands
 # calculate who won
 function main {
@@ -743,7 +741,7 @@ function main {
 	printf '\e[2J' # clear the screen
 	printf '\e[H' # move the cursor home
 	while true; do
-		printf "\e[10;50H" # move cursor to line 21 col 0
+		printf "\e[10;50H" # move cursor to line 10 col 50
 		echo "Chips: ${GREEN}$chips${RST}"
 		printf '\e[H' # move the cursor home
 		printf "${RED}"'\---Dealer---/'"${RST}"	
@@ -754,9 +752,7 @@ function main {
 		sleep 1
 		deal_card 10 10 # player second draw
 		ace_lower "player_total"
-		#((player_total+=card_value))
 		echo "${GREEN}Total: $player_total${RST}"
-		# sleep 1
 		# printing dealers first card
 		deal_card 2 0 # dealer first draw
 		dealer_total=$card_value
