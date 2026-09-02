@@ -575,7 +575,7 @@ function check_blackjack {
 	# $1 will be either player_total or dealer_total
 	local check_total=$1
 	if [[ $check_total -eq 21 ]]; then
-		printf "\e[20;0H" # move cursor to line 16 col 0
+		printf "\e[20;0H" # move cursor to line 20 col 0
 		echo "***BLACKJACK***"
 		who_won
 		sleep 3
